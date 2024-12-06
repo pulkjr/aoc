@@ -14,7 +14,7 @@ fn main() {
         input.push(row.chars().collect());
     }
 
-    println!("{:?}", input);
+    //println!("{:?}", input);
 
     let mut puzzle = Puzzle::new(&input);
 
@@ -264,9 +264,9 @@ fn process(puzzle: &mut Puzzle, input: Vec<Vec<char>>) {
     directions.push(Direction::Left);
 
     while cursor.has_more {
-        println!("cursor {}, {}", cursor.x, cursor.y);
+        //println!("cursor {}, {}", cursor.x, cursor.y);
         if cursor.x == 0 {
-            println!(" : {:?}", input[cursor.y]);
+            //println!(" : {:?}", input[cursor.y]);
         }
         if input[cursor.y][cursor.x] != word[0] {
             cursor.next();
@@ -298,19 +298,20 @@ fn search(
     let mut buf = Buffer::new_from_buffer(&buffer);
     let buf = buf.get_next(direction);
 
-    println!(" - the direction: {:?} -  {:?}", direction, buf);
+    //println!(" - the direction: {:?} -  {:?}", direction, buf);
     if buf.is_none() {
         return None;
     }
     let buf = buf.unwrap();
 
-    println!(
+    /*println!(
         "   - Value is: {} expect {}",
-        input[buf.y][buf.x], word[position]
-    );
+        input[buf.y][buf.x],
+        word[position]
+    );*/
 
     if input[buf.y][buf.x] == word[position] && position == (word.len() - 1) {
-        println!("***** FOUND ONE****");
+        //println!("***** FOUND ONE****");
         return Some(1);
     }
     if input[buf.y][buf.x] != word[position] {
