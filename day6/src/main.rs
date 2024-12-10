@@ -60,7 +60,7 @@ impl Guard {
             }
         };
         if self.test_next(&next_pos) {
-            if !self.previous_positions.iter().any(|x| *x == next_pos) {
+            if !self.previous_positions.contains(&next_pos) {
                 self.previous_positions.push(self.position.clone());
             }
             self.position = next_pos;
@@ -107,7 +107,7 @@ impl Guard {
     }
 
     fn test_next(&self, next_pos: &(usize, usize)) -> bool {
-        println!("{:?}", next_pos);
+        //println!("{:?}", next_pos);
         if self.grid[next_pos.0][next_pos.1] == '#' {
             return false;
         }
