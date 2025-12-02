@@ -7,60 +7,52 @@ R60
 L55
 L1
 L99
-R114
-L182
+R14
+L82
 '@
-
-function subtract
-{
-    param(
-        $currentDial,
-        [int]$turnAmount
-    )
-
-    $tempValue = $currentDial - $turnAmount
-
-    while ( $tempValue -lt 0)
-    {
-        $tempValue = 100 + $tempValue
-    }
-    return $tempValue
-}
-function add
-{
-    param(
-        $currentDial,
-        [int]$turnAmount
-    )
-
-    $tempValue = $currentDial + $turnAmount
-
-    while ( $tempValue -gt 99)
-    {
-        $tempValue = $tempValue - 100
-    }
-    return $tempValue
-}
 
 $zero_count = 0
 $dialValue = 50
 
 foreach($turn in $challenge.Split("`n"))
 {
-    Write-Host "Turn: $turn"
-    if($turn.StartsWith('L'))
+    $start = $dialValue
+    Write-Host "Start Dial: $dialValue  Turn: $turn"
+    [int]$v = $turn.Substring(1);
+
+    if ( $turn[0] -eq 'L')
     {
-        $dialValue = subtract -currentDial $dialValue -turnAmount $turn.TrimStart('L')
+        $dialValue -= $v
     } else
     {
-        $dialValue = add -currentDial $dialValue -turnAmount $turn.TrimStart('R')
+        $dialValue += $v
     }
-    Write-Host " - dialValue: $dialValue"
+
+    $r = 0
+    if ( $dialValue -ne 100 )
+    {
+        $r = [math]::Abs([math]::Floor($dialValue / 100))
+        Write-Host " - r: $r"
+    }
+    if( $start -eq 0 -and $r -gt 0)
+    {
+        $r--
+    }
+
+    $dialValue = $dialValue % 100
+
+    if($dialValue -lt 0)
+    {
+        $dialValue += 100
+    }
     if ( $dialValue -eq 0)
     {
-        Write-Host ' - YES a Zero'
-        $zero_count++
+        $zero_count++;
     }
+
+    $zero_count += $r
+
+    Write-Host " - dialValue: $dialValue, zero_count: $zero_count"
 }
 
 Write-Host "Final Count of Zeros is $zero_count"
