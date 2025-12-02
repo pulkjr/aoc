@@ -12,47 +12,25 @@ L82
 '@
 
 $zero_count = 0
-$dialValue = 50
+[int]$dialValue = 50
 
-foreach($turn in $challenge.Split("`n"))
-{
+foreach ($turn in $challenge.Split("`n")) {
+    [int]$v = $turn.Substring(1)
+    $distance = if ($turn[0] -eq 'L') { -$v } else { $v }
+
     $start = $dialValue
-    Write-Host "Start Dial: $dialValue  Turn: $turn"
-    [int]$v = $turn.Substring(1);
+    $end   = $dialValue + $distance
 
-    if ( $turn[0] -eq 'L')
-    {
-        $dialValue -= $v
-    } else
-    {
-        $dialValue += $v
+    $dialValue = (($end % 100) + 100) % 100
+
+    # Count every time we hit 0 along the way
+    for ($i = 1; $i -le [math]::Abs($distance); $i++) {
+        $step = ($start + ($distance -lt 0 ? -$i : $i)) % 100
+        if ($step -lt 0) { $step += 100 }
+        if ($step -eq 0) { $zero_count++ }
     }
 
-    $r = 0
-    if ( $dialValue -ne 100 )
-    {
-        $r = [math]::Abs([math]::Floor($dialValue / 100))
-        Write-Host " - r: $r"
-    }
-    if( $start -eq 0 -and $r -gt 0)
-    {
-        $r--
-    }
-
-    $dialValue = $dialValue % 100
-
-    if($dialValue -lt 0)
-    {
-        $dialValue += 100
-    }
-    if ( $dialValue -eq 0)
-    {
-        $zero_count++;
-    }
-
-    $zero_count += $r
-
-    Write-Host " - dialValue: $dialValue, zero_count: $zero_count"
+    Write-Host "Turn $turn -> dial $dialValue, zero_count $zero_count"
 }
 
 Write-Host "Final Count of Zeros is $zero_count"
