@@ -10,6 +10,7 @@ foreach($inputRange in $rawInput.Replace('\n', '').Split(',', [System.StringSpli
         continue
     }
     [decimal]$start, [decimal]$finish = $inputRange.Split('-',[System.StringSplitOptions]::TrimEntries)
+
     :numberLoop for($i = $start; $i -le $finish; $i++)
     {
         $itterString = "$i"
