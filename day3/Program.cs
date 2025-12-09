@@ -1,28 +1,43 @@
 ﻿class JoltageCalc
 {
-    static int MaxJoltageFromBank(string bank)
+    static string MaxJoltage(string digits, int length)
     {
-        int maxJoltage = 0;
+        int toRemove = digits.Length - length;
+        var stack = new Stack<char>();
 
-        // Get int from ascii char
-        int maxLeftDigit = bank[0] - '0';
+        Console.WriteLine($"Input digits: {digits}, need length {length}, can remove {toRemove}");
 
-        for (int j = 1; j < bank.Length; j++)
+        foreach (char d in digits)
         {
-            int rightDigit = bank[j] - '0';
-
-            // form two-digit number with best left digit so far
-            int joltage = maxLeftDigit * 10 + rightDigit;
-            if (joltage > maxJoltage)
-                maxJoltage = joltage;
-
-            // update maxLeftDigit if current digit is larger
-            int currentDigit = bank[j] - '0';
-            if (currentDigit > maxLeftDigit)
-                maxLeftDigit = currentDigit;
+            Console.WriteLine($"\nConsidering digit: {d}");
+            while (stack.Count > 0 && toRemove > 0 && stack.Peek() < d)
+            {
+                char removed = stack.Pop();
+                toRemove--;
+                Console.WriteLine(
+                    $"  Popped {removed} (smaller than {d}), remaining removals: {toRemove}"
+                );
+            }
+            stack.Push(d);
+            Console.WriteLine($"  Pushed {d}, stack now: [{string.Join("", stack.Reverse())}]");
         }
 
-        return maxJoltage;
+        // If we still need to remove, drop from the end
+        while (toRemove > 0)
+        {
+            char removed = stack.Pop();
+            toRemove--;
+            Console.WriteLine($"Removing extra {removed} from end, remaining removals: {toRemove}");
+        }
+
+        // Build result in correct order
+        var result = new char[length];
+        for (int i = length - 1; i >= 0; i--)
+        {
+            result[i] = stack.Pop();
+        }
+
+        return new string(result);
     }
 
     static void Main()
@@ -32,10 +47,11 @@
         string[] banks = fileContents
             .ReplaceLineEndings()
             .Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
-        long total = 0;
+        decimal total = 0;
         foreach (var bank in banks)
         {
-            total += MaxJoltageFromBank(bank);
+            var finalNum = MaxJoltage(bank, 12);
+            total += decimal.Parse(finalNum);
         }
         Console.WriteLine($"Total Value: {total}");
     }
