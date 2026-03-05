@@ -108,13 +108,13 @@ class IngredientChecker
                     else
                     {
                         // Look at the last merged range
-                        var (start, end) = merged[^1];
+                        var (previousStart, previousEnd) = merged[^1];
 
                         // If the current range overlaps with the last merged one...
-                        if (current.start <= end)
+                        if (current.start <= previousEnd)
                         {
                             // ...merge them by extending the end if needed
-                            merged[^1] = (start, Math.Max(end, current.end));
+                            merged[^1] = (previousStart, Math.Max(previousEnd, current.end));
                         }
                         else
                         {
